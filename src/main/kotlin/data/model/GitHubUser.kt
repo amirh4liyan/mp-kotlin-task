@@ -1,3 +1,4 @@
+// GitHubUser.kt
 package edu.sharif.kotlin.data.model
 
 import com.google.gson.annotations.SerializedName
