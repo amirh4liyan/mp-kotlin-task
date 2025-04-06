@@ -7,6 +7,31 @@ import edu.sharif.kotlin.data.model.GitHubUser
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 
+// [DONE]
+fun printRepoDetails(user: GitHubUser, repo: GitHubRepo) {
+    println("""
+            ┌──────────────────────────────────────────────────────────
+            │ User: ${user.username}
+            │ Repo: ${repo.name}
+            │ URL: ${repo.url}
+            └──────────────────────────────────────────────────────────
+        """.trimIndent())
+}
+
+// [DONE]
+fun printUserDetails(user: GitHubUser) {
+    // AI Generated Pattern:
+    println("""
+            ┌───────────────────────────────────────────
+            │ Username: ${user.username}
+            │ Joined: ${user.joinedDate}
+            │ Followers: ${user.followersCount}
+            │ Following: ${user.followingCount}
+            │ Public Repos: ${user.publicReposCount}
+            └───────────────────────────────────────────
+        """.trimIndent())
+}
+
 suspend fun getUser(username: String): GitHubUser? {
     try {
         return RetrofitHelper.githubService.getUserInfo(username)
@@ -42,71 +67,56 @@ fun main(): Unit = runBlocking{
     var INPUT: String
     var CODE: Int
     while (true) {
-        println("\tSelect Option from Menu: ")
-        println("\t\t1) Get Data From Server Based on Username")
-        println("\t\t2) Show Available Users")
-        println("\t\t3) Search Based on Username")
-        println("\t\t4) Search Based on Repository Name")
-        println("\t\t5) Exit App")
+        println("Select Option from Menu: ")
+        println("  1) Get Data From Server Based on Username")
+        println("  2) Show Available Users")
+        println("  3) Search Based on Username")
+        println("  4) Search Based on Repository Name")
+        println("  5) Exit App")
         print("[In-Int] Enter Item Code (1 -> 5): ")
         INPUT = readln()
-        CODE = -1
         try {
             CODE = INPUT.toInt()
-        } catch (e: NumberFormatException) {
-            println("[Err]: Invalid Input")
-        }
 
-        when (CODE) {
-            1 -> {
-                print("[In-String] Enter Username: ")
-                val USERNAME = readln()
-                val user = getUser(USERNAME)
-                val repo = getRepos(USERNAME)
-                println(user)
-                println(repo)
-                if (repo != null && user != null) {
+            when (CODE) {
+                1 -> {
+                    print("[In-String] Enter Username: ")
+                    val USERNAME = readln()
+                    val user = getUser(USERNAME)
+                    val repo = getRepos(USERNAME)
+                    if (repo != null && user != null) {
                         users.put(user, repo)
-                }
-            }
-            2 -> {
-                users.forEach { (user, repos) ->
-                    println("""
-                    Username: ${user.username}
-                    Followers: ${user.followersCount}
-                    Following: ${user.followingCount}
-                    Repositories: ${repos.size}
-                    Joined: ${user.joinedDate}
-                    ----------------------
-                    """.trimIndent())
-                }
-            }
-            3 -> {
-                print("Enter username to search: ")
-                val query = readln()
-                val result = users.keys.find { it.username.equals(query, ignoreCase = true) }
-                result?.let { user ->
-                    println("User: ${user.username} found")
-                } ?: println("User not found!")
-            }
-            4 -> {
-                print("Enter repository name to search: ")
-                val query = readln()
-                users.forEach { (user, repos) ->
-                    repos.filter { it.name.contains(query, ignoreCase = true) }.forEach { repo ->
-                        println("""
-                        User: ${user.username}
-                        Repo: ${repo.name}
-                        URL: ${repo.url}
-                        ----------------------
-                        """.trimIndent())
                     }
                 }
+                2 -> {
+                    users.forEach {
+                        printUserDetails(it.key)
+                    }
+                }
+                3 -> {
+                    print("[In-String] Enter username to search: ")
+                    val query = readln()
+                    val result = users.keys.find { it.username.contains(query, ignoreCase = true) }
+                    result?.let {
+                        printUserDetails(it)
+                    } ?: println("\u001B[31m[Out]: User not found!\u001B[0m")
+                }
+                4 -> {
+                    print("[In-String] Enter repository name to search: ")
+                    val query = readln()
+                    users.forEach { (user, repos) ->
+                        repos.filter { it.name.contains(query, ignoreCase = true) }.forEach { repo ->
+                            printRepoDetails(user, repo)
+                        }
+                    }
+                }
+                5 -> {
+                    kotlin.system.exitProcess(0)
+                }
+                else -> println("\u001B[31m[Out]: Invalid Input\u001B[0m")
             }
-            5 -> {
-                kotlin.system.exitProcess(0)
-            }
-            else -> println("[Out]: Invalid Input")
+        } catch (e: NumberFormatException) {
+            println("\u001B[31m[Err]: Invalid Input\u001B[0m")
         }
     }
 }
