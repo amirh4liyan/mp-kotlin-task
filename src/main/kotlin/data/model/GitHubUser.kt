@@ -1,4 +1,4 @@
-package edu.sharif.kotlin
+package edu.sharif.kotlin.data.model
 
 data class GitHubUser(
     val user: String,
