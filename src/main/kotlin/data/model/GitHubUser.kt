@@ -1,9 +1,11 @@
 package edu.sharif.kotlin.data.model
 
+import com.google.gson.annotations.SerializedName
+
 data class GitHubUser(
-    val user: String,
-    val publicRepos: MutableList<String>,
-    val JoinedDate: String,
-    val followersCount: Int,
-    val followingCount: Int
+    @SerializedName("login") val username: String,
+    @SerializedName("public_repos") val publicReposCount: Int,
+    @SerializedName("created_at") val joinedDate: String,
+    @SerializedName("followers") val followersCount: Int,
+    @SerializedName("following") val followingCount: Int
 )
