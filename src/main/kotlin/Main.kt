@@ -48,7 +48,7 @@ fun main(): Unit = runBlocking{
         println("\t\t3) Search Based on Username")
         println("\t\t4) Search Based on Repository Name")
         println("\t\t5) Exit App")
-        print("[In-Int]: Enter Item Code (1 -> 5): ")
+        print("[In-Int] Enter Item Code (1 -> 5): ")
         INPUT = readln()
         CODE = -1
         try {
@@ -59,8 +59,10 @@ fun main(): Unit = runBlocking{
 
         when (CODE) {
             1 -> {
-                val user = getUser("pouyayarandi")
-                val repo = getRepos("pouyayarandi")
+                print("[In-String] Enter Username: ")
+                val USERNAME = readln()
+                val user = getUser(USERNAME)
+                val repo = getRepos(USERNAME)
                 println(user)
                 println(repo)
                 if (repo != null && user != null) {
